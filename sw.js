@@ -4,11 +4,11 @@ const ASSETS = [
   ".",
   "index.html",
   "manifest.webmanifest",
-  "icons/icon-192.png",
-  "icons/icon-512.png",
-  "icons/icon-maskable-512.png",
-  "icons/apple-touch-icon.png",
-  "icons/favicon-64.png"
+  "./icon-192.png",
+  "./icon-512.png",
+  "./icon-maskable-512.png",
+  "./apple-touch-icon.png",
+  "./favicon-64.png"
 ];
 
 self.addEventListener("install", (e) => {
@@ -44,7 +44,7 @@ self.addEventListener("push", (e) => {
   let data = { title: "Foundations", body: "Time for this month's check-in." };
   try { if (e.data) data = e.data.json(); } catch (_) {}
   e.waitUntil(self.registration.showNotification(data.title, {
-    body: data.body, icon: "icons/icon-192.png", badge: "icons/icon-192.png"
+    body: data.body, icon: "./icon-192.png", badge: "./icon-192.png"
   }));
 });
 self.addEventListener("notificationclick", (e) => {
