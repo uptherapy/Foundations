@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Foundations — Unlimited Pediatric Therapy</title>
+<meta name="description" content="A monthly developmental check-in for your little one, by Unlimited Pediatric Therapy." />
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="theme-color" content="#407090" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<link rel="icon" href="icons/favicon-64.png" sizes="64x64" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Foundations" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Hanken+Grotesque:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --bg:#EEF3F6;
+    --surface:#FFFFFF;
+    --surface-2:#F7FAFB;
+    --blue:#407090;
+    --blue-d:#2E5168;
+    --gold:#D8A840;
+    --gold-d:#B9871F;
+    --ink:#27414F;
+    --muted:#5E727E;
+    --faint:#93A4AD;
+    --line:#E4EBEF;
+    --line-strong:#CEDAE0;
+
+    --gross:#E07A5F;
+    --fine:#D8A840;
+    --cog:#407090;
+    --comm:#2E9B8E;
+    --social:#C77C99;
+
+    --shadow:0 1px 2px rgba(39,65,79,.05), 0 10px 30px rgba(39,65,79,.08);
+    --r:18px;
+    --r-sm:13px;
+    --phone:500px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Hanken Grotesque",system-ui,sans-serif;font-size:16px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.disp{font-family:"Baloo 2",system-ui,sans-serif;font-weight:600;line-height:1.1;margin:0;letter-spacing:-.005em}
+  button{font-family:inherit;cursor:pointer}
+  :focus-visible{outline:2.5px solid var(--blue);outline-offset:2px;border-radius:7px}
+
+  /* phone shell */
+  .shell{max-width:var(--phone);margin:0 auto;min-height:100dvh;background:var(--bg);
+    box-shadow:0 0 60px rgba(39,65,79,.08);position:relative}
+  .pad{padding:0 18px}
+
+  /* app bar */
+  header.bar{position:sticky;top:0;z-index:40;background:rgba(238,243,246,.9);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+  .bar-in{display:flex;align-items:center;justify-content:space-between;gap:12px;height:58px;padding:0 18px}
+  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .mark{width:30px;height:30px;flex:none}
+  .brand .nm{font-family:"Baloo 2";font-weight:700;font-size:18px;color:var(--blue-d);line-height:1}
+  .brand .sub{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);margin-top:1px}
+  .who{display:flex;align-items:center;gap:8px}
+  .who .pill{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line-strong);
+    padding:5px 10px;border-radius:999px;font-weight:700;font-size:13px;color:var(--blue-d)}
+  .who .pill .age{color:var(--muted);font-weight:500}
+  .linkbtn{background:none;border:none;color:var(--muted);font-size:12.5px;font-weight:700;padding:6px;text-decoration:underline;text-underline-offset:3px}
+
+  /* install banner */
+  .install{display:none;margin:12px 18px 0;background:var(--blue);color:#fff;border-radius:var(--r-sm);
+    padding:12px 14px;align-items:center;gap:12px;font-size:13.5px;line-height:1.4;box-shadow:var(--shadow)}
+  .install.show{display:flex}
+  .install b{font-weight:700}
+  .install .x{margin-left:auto;background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:8px;padding:7px 11px;font-weight:700;font-size:13px;flex:none}
+  .install.ios .x{display:none}
+
+  /* hero / setup */
+  .hero{padding:26px 18px 6px}
+  .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--gold-d)}
+  .hero h1{font-size:clamp(30px,8.5vw,40px);margin:12px 0 0;color:var(--blue-d)}
+  .hero h1 em{font-style:normal;color:var(--gold-d)}
+  .hero p.lede{font-size:16px;color:var(--muted);margin:13px 0 0;line-height:1.55}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+  .setup{margin:22px 18px 40px;padding:24px}
+  .setup h2{font-size:21px;margin-bottom:5px;color:var(--blue-d)}
+  .setup p.s{color:var(--muted);margin:0 0 18px;font-size:14.5px}
+  .field{margin-bottom:15px}
+  .field label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}
+  .field input{width:100%;font-family:inherit;font-size:16px;padding:13px 14px;border:1.5px solid var(--line-strong);
+    border-radius:var(--r-sm);background:var(--surface-2);color:var(--ink)}
+  .field input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(64,112,144,.13)}
+  .field .hint{font-size:12.5px;color:var(--faint);margin-top:6px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--blue);color:#fff;border:none;
+    border-radius:999px;padding:14px 22px;font-size:15.5px;font-weight:700;transition:transform .12s}
+  .btn:active{transform:scale(.98)}
+  .btn.gold{background:var(--gold);color:var(--blue-d)}
+  .btn.block{width:100%}
+
+  /* web stage */
+  .stage{margin:18px 18px 0;padding:18px 14px 8px;text-align:center}
+  svg.web{width:100%;max-width:440px;height:auto;display:block;margin:0 auto;overflow:visible}
+  .web-node{cursor:pointer}
+  .web-pct{font-size:11px;font-weight:800}
+  .web-cap{font-size:11px;font-weight:700}
+  .web-legend{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 20px;margin-top:8px;font-size:11.5px;color:var(--muted);font-weight:600}
+  .web-legend span{display:inline-flex;align-items:center}
+  .web-legend i.ll{display:inline-block;width:18px;height:0;border-top:3px solid #4E6576;margin-right:6px;border-radius:2px}
+  .web-legend i.ll.dot{border-top:3px dotted #8497A2}
+  .stage .tip{font-size:13px;color:var(--muted);margin:6px 8px 4px}
+
+  .month-cta{display:flex;gap:10px;align-items:center;justify-content:center;margin:6px 0 2px;flex-wrap:wrap}
+  .saved-note{font-size:13px;color:var(--comm);font-weight:700;opacity:0;transition:opacity .2s}
+  .saved-note.show{opacity:1}
+
+  /* section head */
+  .sec{margin:30px 18px 0}
+  .sec h2{font-size:21px;color:var(--blue-d)}
+  .sec .s{color:var(--muted);font-size:13.5px;margin-top:3px}
+  .chip{display:inline-block;font-size:12px;font-weight:700;color:var(--blue-d);background:#fff;border:1px solid var(--line-strong);
+    padding:5px 11px;border-radius:999px;margin-top:10px}
+
+  /* foundation cards */
+  .founds{margin:14px 18px 0;display:flex;flex-direction:column;gap:13px}
+  .fcard{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:var(--r);
+    box-shadow:var(--shadow);overflow:hidden}
+  .fhead{display:flex;align-items:center;gap:13px;padding:15px 16px;width:100%;background:none;border:none;text-align:left}
+  .ficon{width:42px;height:42px;border-radius:12px;flex:none;display:grid;place-items:center;
+    background:color-mix(in srgb,var(--c) 14%,white);color:var(--c)}
+  .ficon svg{width:24px;height:24px}
+  .ftitle{flex:1;min-width:0}
+  .ftitle .nm{font-family:"Baloo 2";font-size:17px;font-weight:600;line-height:1.15}
+  .ftitle .sb{font-size:12px;color:var(--muted)}
+  .fmeter{display:flex;align-items:center;gap:9px;flex:none}
+  .ring{position:relative;width:38px;height:38px;flex:none}
+  .ring .num{position:absolute;inset:0;display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--ink)}
+  .flag-dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .chev{width:19px;height:19px;color:var(--faint);transition:transform .25s;flex:none}
+  .fcard.open .chev{transform:rotate(180deg)}
+
+  .fbody{display:none;padding:0 16px 18px}
+  .fcard.open .fbody{display:block;border-top:1px solid var(--line)}
+
+  /* tabbed card body */
+  .ftabs{display:flex;gap:5px;margin:14px 0 4px;background:var(--surface-2);padding:4px;border-radius:12px;border:1px solid var(--line)}
+  .ftab{flex:1;text-align:center;font-size:12.5px;font-weight:700;color:var(--muted);padding:9px 4px;border-radius:8px;cursor:pointer;border:none;background:none;font-family:inherit;transition:.15s}
+  .ftab.on{background:#fff;color:var(--c);box-shadow:0 1px 4px rgba(39,65,79,.1)}
+  .fpane{display:none;padding-top:13px}
+  .fpane.on{display:block;animation:fpfade .2s ease}
+  @keyframes fpfade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){.fpane.on{animation:none}}
+  .why-lead{margin:0;font-size:14.5px;line-height:1.55;color:var(--ink)}
+  .why-sub{margin:10px 0 0;font-size:13px;line-height:1.5;color:var(--muted)}
+  .opensup{margin-top:14px;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+  .opensup .ol{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-right:2px}
+  .opensup .ol:not(:first-child){margin-left:8px}
+  .why{display:flex;flex-direction:column;gap:11px;padding:16px 0 4px}
+  .box{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-sm);padding:13px 14px}
+  .box .lab{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);
+    margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .box .lab svg{width:14px;height:14px}
+  .box.webbox .lab{color:var(--c)}
+  .box p{margin:0;font-size:13.5px;line-height:1.5}
+  .links{margin-top:8px;font-size:12px;color:var(--muted)}
+  .tag{display:inline-block;font-weight:700;padding:1px 8px;border-radius:99px;font-size:11.5px;margin:2px 4px 2px 0;border:1px solid}
+
+  .mh{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin:16px 0 9px}
+  .checks{display:flex;flex-direction:column;gap:7px}
+  .check{display:flex;align-items:flex-start;gap:11px;padding:11px 12px;border:1px solid var(--line);border-radius:var(--r-sm);
+    background:#fff;cursor:pointer}
+  .check.on{background:color-mix(in srgb,var(--c) 7%,white);border-color:color-mix(in srgb,var(--c) 32%,white)}
+  .cbox{width:21px;height:21px;border-radius:7px;border:2px solid var(--line-strong);flex:none;margin-top:1px;
+    display:grid;place-items:center;transition:all .15s}
+  .check.on .cbox{background:var(--c);border-color:var(--c)}
+  .cbox svg{width:13px;height:13px;color:#fff;opacity:0;transition:opacity .15s}
+  .check.on .cbox svg{opacity:1}
+  .ctext{font-size:14px;line-height:1.4}
+  .keytag{font-size:10px;font-weight:700;color:var(--gold-d);background:color-mix(in srgb,var(--gold) 18%,white);
+    padding:1px 6px;border-radius:99px;margin-left:6px;white-space:nowrap}
+
+  /* flag banners */
+  .flag{display:flex;gap:11px;margin-top:16px;padding:13px 15px;border-radius:var(--r-sm);font-size:13.5px;line-height:1.5}
+  .flag svg{width:19px;height:19px;flex:none;margin-top:1px}
+  .flag.strong{background:color-mix(in srgb,var(--comm) 9%,white);border:1px solid color-mix(in srgb,var(--comm) 28%,white);color:#1f6f64;font-weight:600}
+  .flag.watch{background:#FDF4E3;border:1px solid #EFD49A;color:#8a6313}
+  .flag.watch b{color:#6f4f0e}
+  .flag.redflag{background:#FCF1E9;border:1px solid #F0C9AE;color:#9a5a2e}
+  .flag.redflag svg{color:#D9824B}
+  /* inline red-flag under a missed key milestone; hides automatically once that milestone is checked */
+  .ms-flag{display:flex;gap:8px;align-items:flex-start;margin:-1px 0 7px 33px;padding:8px 11px;background:#FCF1E9;border:1px solid #F0C9AE;border-radius:10px;font-size:12px;line-height:1.45;color:#9a5a2e}
+  .ms-flag svg{width:15px;height:15px;flex:none;margin-top:1px;color:#D9824B}
+  .check.on + .ms-flag{display:none}
+  .mh.soon{color:var(--faint)}
+  .soongrp{opacity:.72}
+  /* building blocks */
+  .bbtog{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 8%,white);border:1px solid color-mix(in srgb,var(--c) 25%,white);border-radius:99px;padding:2px 9px;margin-left:8px;cursor:pointer;font-family:inherit;vertical-align:middle;white-space:nowrap}
+  .bbtog svg{width:11px;height:11px;transition:.2s}
+  .bbtog.open svg{transform:rotate(180deg)}
+  .bbwrap{max-height:0;overflow:hidden;transition:max-height .3s ease;margin:0 0 9px}
+  .bbwrap.open{max-height:700px}
+  .bbstack{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:13px 13px 15px;margin-top:4px}
+  .bblab{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-bottom:9px;text-align:center}
+  .bblayer{border-radius:11px;padding:10px 12px;text-align:center;color:#fff}
+  .bblt{display:block;font-size:13px;font-weight:700;line-height:1.2}
+  .bbls{display:block;font-size:10.5px;opacity:.92;margin-top:1px}
+  .bbarrow{display:flex;justify-content:center;padding:3px 0;color:var(--gold)}
+  .bbarrow svg{width:15px;height:12px}
+  .bbfoot{font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.4;font-style:italic}
+
+  /* activities */
+  .acts{margin-top:14px;border-radius:var(--r-sm);overflow:hidden;border:1px solid color-mix(in srgb,var(--c) 28%,white)}
+  .acts-head{display:flex;align-items:center;gap:9px;padding:11px 14px;background:color-mix(in srgb,var(--c) 11%,white);
+    font-weight:700;font-size:13.5px}
+  .acts-head svg{width:17px;height:17px;color:var(--c)}
+  .acts-head .ct{margin-left:auto;font-size:11.5px;color:var(--muted);font-weight:600}
+  .act{display:flex;gap:11px;padding:12px 14px;border-top:1px solid color-mix(in srgb,var(--c) 14%,white);background:#fff}
+  .act .n{font-family:"Baloo 2";font-size:14px;color:var(--c);font-weight:700;flex:none;width:16px}
+  .act .at{font-weight:700;font-size:13.5px;margin-bottom:2px}
+  .act .ah{font-size:13px;color:var(--muted);line-height:1.45}
+  .vidbtn{display:inline-flex;align-items:center;gap:5px;margin-top:9px;background:color-mix(in srgb,var(--c) 12%,white);color:var(--c);border:1px solid color-mix(in srgb,var(--c) 32%,white);border-radius:99px;padding:6px 13px;font-size:12.5px;font-weight:700}
+  .vidbtn svg{width:13px;height:13px}
+  .vidbox{display:none}
+  .vidbox.open{display:block;margin-top:10px;border-radius:12px;overflow:hidden;background:#000;aspect-ratio:16/9}
+  .vidbox video,.vidbox iframe{width:100%;height:100%;border:0;display:block;object-fit:cover}
+  .vidph{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:5px;text-align:center;padding:16px;background:linear-gradient(135deg,#407090,#2E5168);color:#fff}
+  .vidph svg{width:34px;height:34px;opacity:.95}
+  .vidph b{font-size:13.5px}
+  .vidph span{font-weight:500;font-size:11px;color:#CBD8E1;max-width:30ch}
+
+  /* history */
+  .hist{margin:14px 18px 0;padding:18px}
+  .hist h3{font-size:17px;color:var(--blue-d);margin-bottom:3px}
+  .hist .s{font-size:13px;color:var(--muted);margin-bottom:14px}
+  .hrow{display:flex;align-items:center;gap:11px;padding:11px 0;border-top:1px solid var(--line)}
+  .hrow .hd{font-size:12.5px;font-weight:700;width:74px;flex:none}
+  .hbars{display:flex;gap:4px;flex:1}
+  .hbars .hb{flex:1;height:30px;border-radius:6px;background:var(--line);position:relative;overflow:hidden}
+  .hbars .hb i{position:absolute;left:0;bottom:0;width:100%;display:block}
+  .hempty{font-size:13.5px;color:var(--faint)}
+
+  footer{padding:28px 18px calc(40px + env(safe-area-inset-bottom));color:var(--faint);font-size:12px;line-height:1.55}
+  footer .disc{margin-top:7px}
+  footer b{color:var(--muted)}
+
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="bar">
+    <div class="bar-in">
+      <div class="brand">
+        <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
+          <rect width="40" height="40" rx="10" fill="#407090"/>
+          <g stroke="#D8A840" stroke-width="1.5" fill="none" opacity=".95">
+            <path d="M20 9 L29 15.5 L25.6 27 L14.4 27 L11 15.5 Z"/>
+            <path d="M20 14 L24.8 17.4 L23 23.4 L17 23.4 L15.2 17.4 Z"/>
+            <line x1="20" y1="20" x2="20" y2="9"/><line x1="20" y1="20" x2="29" y2="15.5"/>
+            <line x1="20" y1="20" x2="25.6" y2="27"/><line x1="20" y1="20" x2="14.4" y2="27"/><line x1="20" y1="20" x2="11" y2="15.5"/>
+          </g>
+          <g fill="#D8A840"><circle cx="20" cy="9" r="2"/><circle cx="29" cy="15.5" r="2"/><circle cx="25.6" cy="27" r="2"/>
+            <circle cx="14.4" cy="27" r="2"/><circle cx="11" cy="15.5" r="2"/><circle cx="20" cy="20" r="2.8"/></g>
+        </svg>
+        <div><div class="nm">Foundations</div><div class="sub">by Unlimited Pediatric</div></div>
+      </div>
+      <div class="who" id="who"></div>
+    </div>
+  </header>
+
+  <div class="install" id="install">
+    <div id="installText"><b>Add Foundations to your home screen</b> so it's one tap away.</div>
+    <button class="x" id="installBtn">Install</button>
+  </div>
+
+  <main id="app"></main>
+
+  <footer>
+    <div><b>Foundations</b> — a monthly developmental check-in, not a diagnosis.</div>
+    <div class="disc">Milestones reflect what most children do by a given age, based on the developmental checkpoints used in early intervention. Every child grows on their own timeline. If a strand stays thin, if your child loses a skill they once had, or if anything ever worries you, reach out to your pediatrician or your local Early Steps program — early support makes a real difference.</div>
+  </footer>
+</div>
+
+<script>
+/* ---------------- DATA ---------------- */
+const DOMAINS=[
+ {id:"gross",name:"Body & Movement",sub:"Gross motor",color:"#E07A5F",
+  root:"Postural control and core strength are the platform the whole web stands on. A steady trunk and head free a baby to look, reach, and explore — nothing else loads in cleanly until the body is steady.",
+  web:"When a baby is stable enough to sit without using their hands to balance, the hands come free for fine motor. A steady trunk also gives the breath and jaw control that talking is built on.",
+  supports:["fine","comm"],depends:[],
+  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.5"/><path d="M12 7.5v6m0 0-3.5 5m3.5-5 3.5 5M7 11l5 1 5-1"/></svg>'},
+ {id:"fine",name:"Hands & Eyes",sub:"Fine motor",color:"#D8A840",
+  root:"Grasping, releasing, and lining the eyes up with the hands — how a child feeds, dresses, builds, and eventually writes.",
+  web:"Depends on a steady trunk and shoulder from Body & Movement. In turn it opens up Thinking — a child learns cause and effect mostly through what their hands do to objects.",
+  supports:["cog"],depends:["gross"],
+  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V5a1.5 1.5 0 0 1 3 0v6m0-1V4a1.5 1.5 0 0 1 3 0v6m0-1V5.5a1.5 1.5 0 0 1 3 0V13a6 6 0 0 1-6 6h-1.2a4 4 0 0 1-3-1.4L4 14.5a1.6 1.6 0 0 1 2.4-2L8 14"/></svg>'},
+ {id:"feed",name:"Feeding & Self-Help",sub:"Feeding, oral-motor & adaptive",color:"#6E9E58",
+  root:"The mouth is its own set of muscles to train — sucking, then munching, chewing, and managing new textures. Feeding is also where a child learns to try, tolerate, and trust new experiences. If meals are stressful, or your child gags on or refuses textures, a feeding therapist can help.",
+  web:"Built on a stable seated posture from Body & Movement and the hand-to-mouth aim of Hands & Eyes. The same lips, tongue, and jaw used to chew shape the sounds of Listening & Talking, and shared meals grow Connecting & Feeling.",
+  supports:["comm","social"],depends:["gross","fine"],
+  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v7a2 2 0 0 0 4 0V3M7 10v11M16 3c-1.6 0-2.6 2.2-2.6 5s1 4 2.6 4 2.6-1.2 2.6-4S17.6 3 16 3Zm0 9v9"/></svg>'},
+ {id:"cog",name:"Thinking",sub:"Problem-solving",color:"#407090",
+  root:"Cause and effect, object permanence, imitation, and figuring things out — the engine behind play, pretend, and learning how the world works.",
+  web:"Fed by the hands and by attention. It loops back into talking — understanding ideas is what gives words something to point at.",
+  supports:["comm"],depends:["fine"],
+  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0-4 10.5V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-3.5A6 6 0 0 0 12 3Z"/><path d="M9.5 22h5M12 13.5v-3m0 0-1.5-1.2m1.5 1.2 1.5-1.2"/></svg>'},
+ {id:"comm",name:"Listening & Talking",sub:"Communication",color:"#2E9B8E",
+  root:"From cooing to babble to first words and sentences. Understanding always comes before talking — a child takes in far more than they can say.",
+  web:"Rides on breath control from the body and ideas from thinking, and it's powered most of all by connection — shared attention with a caregiver is where language takes root.",
+  supports:["social"],depends:["gross","cog","social"],
+  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5a7 7 0 0 1 7-7h.5a7 7 0 0 1 0 14H8l-3.5 3v-3.5A7 7 0 0 1 4 11.5Z"/><path d="M9 11h6M9 8.5h3"/></svg>'},
+ {id:"social",name:"Connecting & Feeling",sub:"Social-emotional",color:"#C77C99",
+  root:"Attachment, joint attention, and the first steps of managing big feelings. This is the soil — a child who feels safe and connected is free to learn.",
+  web:"It holds the whole web together. Shared gaze and back-and-forth turns feed talking; feeling secure is what lets a child stay with a task long enough to grow every other strand.",
+  supports:["comm"],depends:[],
+  icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.3-7-9.2A3.8 3.8 0 0 1 12 8a3.8 3.8 0 0 1 7-2.2"/><circle cx="17.5" cy="7.5" r="3"/></svg>'},
+];
+const LINKS=[["gross","fine"],["fine","cog"],["cog","comm"],["social","comm"],["gross","comm"],["social","cog"],["gross","feed"],["fine","feed"],["feed","comm"]];
+const BANDS=[2,4,6,9,12,15,18,24,30,36];
+const bandLabel=m=>m>=24?`${m/12} years`:`${m} months`;
+
+const MS={"gross": [{"t": "Lifts head briefly during tummy time", "em": 2, "by": 4, "k": 0}, {"t": "Moves both arms and both legs equally", "em": 2, "by": 4, "k": 0}, {"t": "Holds head up; begins to steady it when held upright", "em": 2, "by": 4, "k": 0}, {"t": "Turns head to both sides lying on back", "em": 2, "by": 4, "k": 1}, {"t": "Straightens/pushes legs when feet touch a surface (supported)", "em": 2, "by": 4, "k": 0}, {"t": "Holds head steady, unsupported, when held", "em": 4, "by": 6, "k": 0}, {"t": "Pushes up onto forearms in tummy time", "em": 4, "by": 6, "k": 0}, {"t": "Begins to roll tummy-to-back", "em": 4, "by": 6, "k": 0}, {"t": "Sits with support, head steady", "em": 4, "by": 6, "k": 0}, {"t": "Bears some weight on legs when held", "em": 4, "by": 6, "k": 0}, {"t": "Rolls both ways (tummy-to-back and back-to-tummy)", "em": 6, "by": 9, "k": 1}, {"t": "Sits with little support; props forward on hands", "em": 6, "by": 9, "k": 0}, {"t": "Pushes up on extended arms in tummy time", "em": 6, "by": 9, "k": 0}, {"t": "Bounces when held standing", "em": 6, "by": 9, "k": 0}, {"t": "4-point crawl", "em": 8, "by": 10, "k": 1}, {"t": "Sits steadily without support", "em": 9, "by": 12, "k": 0}, {"t": "Gets into a sitting position on their own", "em": 9, "by": 12, "k": 0}, {"t": "Pulls to stand holding on", "em": 9, "by": 12, "k": 0}, {"t": "Pulls to stand and cruises along furniture", "em": 12, "by": 15, "k": 0}, {"t": "Stands holding on; may stand alone briefly", "em": 12, "by": 15, "k": 0}, {"t": "Lowers from standing to sitting with control", "em": 12, "by": 15, "k": 0}, {"t": "Walks with hands held or a few steps with help (emerging)", "em": 12, "by": 15, "k": 0}, {"t": "Stands alone well", "em": 15, "by": 18, "k": 0}, {"t": "Takes first independent steps / walks", "em": 15, "by": 18, "k": 1}, {"t": "Stoops to pick up a toy and stands back up", "em": 15, "by": 18, "k": 0}, {"t": "Crawls up stairs or climbs onto low furniture", "em": 15, "by": 18, "k": 0}, {"t": "Walks well without holding on", "em": 18, "by": 24, "k": 1}, {"t": "Climbs on and off a couch or chair", "em": 18, "by": 24, "k": 0}, {"t": "Walks up stairs with a hand held", "em": 18, "by": 24, "k": 0}, {"t": "Runs (stiffly); pulls a toy while walking", "em": 18, "by": 24, "k": 0}, {"t": "Runs well", "em": 24, "by": 30, "k": 0}, {"t": "Kicks a ball", "em": 24, "by": 30, "k": 0}, {"t": "Walks up and down stairs holding on", "em": 24, "by": 30, "k": 0}, {"t": "Jumps off a low step (emerging); throws a ball", "em": 24, "by": 30, "k": 0}, {"t": "Jumps with both feet off the ground", "em": 30, "by": 36, "k": 0}, {"t": "Throws a ball overhand", "em": 30, "by": 36, "k": 0}, {"t": "Walks up stairs alternating feet, with support", "em": 30, "by": 36, "k": 0}, {"t": "Kicks a ball forward; pushes a riding toy with feet", "em": 30, "by": 36, "k": 0}, {"t": "Walks up stairs alternating feet", "em": 36, "by": 36, "k": 0}, {"t": "Jumps over a low object; stands on one foot briefly", "em": 36, "by": 36, "k": 0}, {"t": "Hops in place (emerging); pedals a tricycle (emerging)", "em": 36, "by": 36, "k": 0}, {"t": "Runs well — turns corners, starts and stops with control", "em": 36, "by": 36, "k": 0}], "fine": [{"t": "Hands often open, not always fisted", "em": 2, "by": 4, "k": 0}, {"t": "Grasps your finger placed in their palm", "em": 2, "by": 4, "k": 0}, {"t": "Brings hands to mouth and together over the chest", "em": 2, "by": 4, "k": 0}, {"t": "Follows a face or toy with eyes, side to side", "em": 2, "by": 4, "k": 0}, {"t": "Reaches for and bats at dangling toys", "em": 4, "by": 6, "k": 0}, {"t": "Holds a toy placed in their hand; shakes it", "em": 4, "by": 6, "k": 0}, {"t": "Brings hands together at midline", "em": 4, "by": 6, "k": 0}, {"t": "Visually studies hands and objects", "em": 4, "by": 6, "k": 0}, {"t": "Reaches for and grabs a toy they want", "em": 6, "by": 9, "k": 0}, {"t": "Transfers a toy from one hand to the other", "em": 6, "by": 9, "k": 0}, {"t": "Rakes small objects; bangs toys on a surface", "em": 6, "by": 9, "k": 0}, {"t": "Turns to look at and study small objects", "em": 6, "by": 9, "k": 0}, {"t": "Picks up small objects with thumb and fingers (emerging pincer)", "em": 9, "by": 12, "k": 0}, {"t": "Holds an object in each hand and bangs them together", "em": 9, "by": 12, "k": 0}, {"t": "Pokes or points with index finger (emerging)", "em": 9, "by": 12, "k": 0}, {"t": "Lets go of objects on purpose; may throw", "em": 9, "by": 12, "k": 0}, {"t": "Neat pincer grasp for small items", "em": 12, "by": 15, "k": 0}, {"t": "Points to or activates toys with one finger", "em": 12, "by": 15, "k": 0}, {"t": "Puts objects into a container and takes them out", "em": 12, "by": 15, "k": 0}, {"t": "Holds a crayon and makes marks; bangs a spoon", "em": 12, "by": 15, "k": 0}, {"t": "Stacks two small objects or blocks", "em": 15, "by": 18, "k": 0}, {"t": "Scribbles after you show them how", "em": 15, "by": 18, "k": 0}, {"t": "Puts objects into smaller-opening containers", "em": 15, "by": 18, "k": 0}, {"t": "Uses a spoon — brings to mouth, spills", "em": 15, "by": 18, "k": 0}, {"t": "Scribbles spontaneously", "em": 18, "by": 24, "k": 0}, {"t": "Stacks 3–4 blocks", "em": 18, "by": 24, "k": 0}, {"t": "Turns pages of a book (several at a time)", "em": 18, "by": 24, "k": 0}, {"t": "Uses one hand more consistently", "em": 18, "by": 24, "k": 0}, {"t": "Stacks 5–6 blocks", "em": 24, "by": 30, "k": 0}, {"t": "Turns single book pages", "em": 24, "by": 30, "k": 0}, {"t": "Imitates vertical, horizontal, and circular crayon strokes", "em": 24, "by": 30, "k": 0}, {"t": "Twists and turns knobs and lids", "em": 24, "by": 30, "k": 0}, {"t": "Builds a tower of 6+ blocks", "em": 30, "by": 36, "k": 0}, {"t": "Uses a more adult-like pencil grasp (emerging)", "em": 30, "by": 36, "k": 0}, {"t": "Strings large beads; snips with scissors (emerging)", "em": 30, "by": 36, "k": 0}, {"t": "Makes horizontal and vertical strokes", "em": 30, "by": 36, "k": 0}, {"t": "Copies a circle; draws a simple face (emerging)", "em": 36, "by": 36, "k": 0}, {"t": "Strings beads; builds a tower of 6+ or a block bridge", "em": 36, "by": 36, "k": 0}, {"t": "Uses a fork and spoon well", "em": 36, "by": 36, "k": 0}, {"t": "Turns book pages one at a time; tries child scissors", "em": 36, "by": 36, "k": 0}], "feed": [{"t": "Coordinates sucking, swallowing, and breathing", "em": 2, "by": 4, "k": 1}, {"t": "Forms a seal and sucks well at breast or bottle", "em": 2, "by": 4, "k": 1}, {"t": "Roots — turns mouth toward a touch on the cheek", "em": 2, "by": 4, "k": 0}, {"t": "Swallows liquids smoothly", "em": 2, "by": 4, "k": 1}, {"t": "Calms and seems to enjoy bath / being held", "em": 2, "by": 4, "k": 0}, {"t": "Settles when needs are met", "em": 2, "by": 4, "k": 0}, {"t": "Holds and mouths a teether", "em": 3, "by": 5, "k": 0}, {"t": "Brings hands and toys to mouth to explore", "em": 4, "by": 6, "k": 0}, {"t": "Shows likes and dislikes of tastes", "em": 4, "by": 6, "k": 0}, {"t": "Uses tongue to move food; closes lips on swallow (emerging)", "em": 4, "by": 6, "k": 0}, {"t": "Watches with interest when others eat", "em": 4, "by": 6, "k": 0}, {"t": "Holds or supports the bottle (emerging)", "em": 4, "by": 6, "k": 0}, {"t": "Reaches for and plays with own feet", "em": 4, "by": 6, "k": 0}, {"t": "Opens mouth for the spoon; takes smooth purees", "em": 6, "by": 9, "k": 0}, {"t": "Sits supported with a steady head to eat", "em": 6, "by": 9, "k": 0}, {"t": "Begins munching; moves food front to back", "em": 6, "by": 9, "k": 0}, {"t": "Closes lips to take food off a spoon (emerging)", "em": 6, "by": 9, "k": 0}, {"t": "Feeds self finger foods (emerging)", "em": 6, "by": 9, "k": 0}, {"t": "Finger-feeds soft foods", "em": 9, "by": 12, "k": 0}, {"t": "Drinks from a cup held by an adult", "em": 9, "by": 12, "k": 0}, {"t": "Reaches for the spoon or cup during feeding", "em": 9, "by": 12, "k": 0}, {"t": "Helps with dressing — pulls off socks or hat", "em": 9, "by": 12, "k": 0}, {"t": "Begins to cooperate with handwashing", "em": 9, "by": 12, "k": 0}, {"t": "Munches and chews with an up-and-down jaw", "em": 10, "by": 14, "k": 1}, {"t": "Self-feeds finger foods", "em": 12, "by": 15, "k": 1}, {"t": "Drinks from a cup, with help", "em": 12, "by": 15, "k": 0}, {"t": "Begins using a spoon (dips and brings to mouth, messy)", "em": 12, "by": 15, "k": 0}, {"t": "Chews soft table foods", "em": 12, "by": 15, "k": 0}, {"t": "Feeds self with fingers; tries small utensils", "em": 12, "by": 15, "k": 0}, {"t": "Raises arms to be picked up; helps when being dressed", "em": 12, "by": 15, "k": 0}, {"t": "Scoops with a spoon and brings it to mouth (messy)", "em": 15, "by": 18, "k": 0}, {"t": "Eats soft mashed and lumpy table foods", "em": 15, "by": 18, "k": 0}, {"t": "Drinks from a straw or open cup with help", "em": 15, "by": 18, "k": 0}, {"t": "Practices using a child-sized fork and spoon", "em": 15, "by": 18, "k": 0}, {"t": "Removes loose clothing partially", "em": 15, "by": 18, "k": 0}, {"t": "Tries to help with toothbrushing", "em": 15, "by": 18, "k": 0}, {"t": "Eats chopped table foods and most cooked meats", "em": 18, "by": 24, "k": 1}, {"t": "Closes lips while chewing with little food loss", "em": 18, "by": 24, "k": 0}, {"t": "Self-feeds with a spoon (less spilling)", "em": 18, "by": 24, "k": 0}, {"t": "Drinks from an open cup", "em": 18, "by": 24, "k": 0}, {"t": "Takes off some clothing", "em": 18, "by": 24, "k": 0}, {"t": "Uses a spoon and open cup more independently; tries to wash hands", "em": 18, "by": 24, "k": 0}, {"t": "Eats most family table foods", "em": 24, "by": 30, "k": 0}, {"t": "Uses a spoon well and a fork to stab food", "em": 24, "by": 30, "k": 0}, {"t": "Drinks from an open cup; uses a straw", "em": 24, "by": 30, "k": 0}, {"t": "Chews with a side-to-side (rotary) jaw movement", "em": 24, "by": 30, "k": 1}, {"t": "Removes loose clothing (jacket, shirt) without help", "em": 24, "by": 30, "k": 0}, {"t": "Tries to wash hands and face; helps put on clothing", "em": 24, "by": 30, "k": 0}, {"t": "Self-feeds a whole meal with spoon and fork", "em": 30, "by": 36, "k": 0}, {"t": "Uses a fork to stab bite-sized pieces", "em": 30, "by": 36, "k": 0}, {"t": "Pours with some help; gets own drink", "em": 30, "by": 36, "k": 0}, {"t": "Accepts a wider range of textures", "em": 30, "by": 36, "k": 0}, {"t": "Takes off shoes, socks, and loose pants", "em": 30, "by": 36, "k": 0}, {"t": "Washes hands; shows interest in the potty (emerging)", "em": 30, "by": 36, "k": 0}, {"t": "Uses a fork and spoon well", "em": 36, "by": 36, "k": 0}, {"t": "Eats most of what the family eats; tries new foods", "em": 36, "by": 36, "k": 0}, {"t": "Pours liquid with help; gets a simple snack (emerging)", "em": 36, "by": 36, "k": 0}, {"t": "Chewing is mature; drinks from an open cup without spilling", "em": 36, "by": 36, "k": 0}, {"t": "Dresses and undresses with little help; unbuttons large buttons", "em": 36, "by": 36, "k": 0}, {"t": "Daytime toilet control (emerging / occasional accidents); brushes teeth with help", "em": 36, "by": 36, "k": 0}], "cog": [{"t": "Watches your face and a slow-moving toy", "em": 2, "by": 4, "k": 0}, {"t": "Looks back and forth between two objects", "em": 2, "by": 4, "k": 0}, {"t": "Looks at and inspects own hands", "em": 2, "by": 4, "k": 0}, {"t": "Quiets or brightens to a familiar voice", "em": 2, "by": 4, "k": 0}, {"t": "Tries to make things happen (kicks to keep a toy moving)", "em": 4, "by": 6, "k": 0}, {"t": "Drops an object and watches it fall", "em": 4, "by": 6, "k": 0}, {"t": "Imitates some facial movements or sounds", "em": 4, "by": 6, "k": 0}, {"t": "Reaches for a partially hidden object", "em": 4, "by": 6, "k": 0}, {"t": "Puts things in mouth to explore them", "em": 4, "by": 6, "k": 0}, {"t": "Repeats an action to make something happen again", "em": 4, "by": 6, "k": 0}, {"t": "Finds a partly hidden object", "em": 6, "by": 9, "k": 0}, {"t": "Explores objects by shaking, banging, and mouthing", "em": 6, "by": 9, "k": 0}, {"t": "Looks for an object that drops out of sight", "em": 9, "by": 12, "k": 0}, {"t": "Bangs two things together to explore", "em": 9, "by": 12, "k": 0}, {"t": "Imitates familiar actions (claps, peek-a-boo)", "em": 9, "by": 12, "k": 0}, {"t": "Works to reach an out-of-reach toy", "em": 9, "by": 12, "k": 0}, {"t": "Looks for things they watched you hide", "em": 12, "by": 15, "k": 0}, {"t": "Explores how objects work (turns to the functional side)", "em": 12, "by": 15, "k": 0}, {"t": "Imitates gestures and actions on request", "em": 12, "by": 15, "k": 0}, {"t": "Simple problem-solving — uses a tool to get a result", "em": 12, "by": 15, "k": 0}, {"t": "Uses things the right way — cup, phone, brush", "em": 15, "by": 18, "k": 0}, {"t": "Looks for an object hidden under a cover", "em": 15, "by": 18, "k": 0}, {"t": "Names or points to a few pictures or objects (emerging)", "em": 15, "by": 18, "k": 1}, {"t": "Matches a sound to its object (doorbell, phone)", "em": 15, "by": 18, "k": 0}, {"t": "Pretend play — feeds a doll, talks on a “phone”", "em": 18, "by": 24, "k": 0}, {"t": "Copies you doing chores, like sweeping", "em": 18, "by": 24, "k": 0}, {"t": "Points to pictures when named; points to 1–3 body parts", "em": 18, "by": 24, "k": 0}, {"t": "Begins to sort or match simple items", "em": 18, "by": 24, "k": 0}, {"t": "Uses one object to stand for another in pretend play", "em": 24, "by": 30, "k": 0}, {"t": "Completes simple inset puzzles; sorts by type", "em": 24, "by": 30, "k": 0}, {"t": "Follows a 2-step direction", "em": 24, "by": 30, "k": 0}, {"t": "Names several pictures; points to many body parts", "em": 24, "by": 30, "k": 0}, {"t": "Pretends in sequences (feeds, then puts doll to bed)", "em": 30, "by": 36, "k": 0}, {"t": "Sorts by one feature; matches some shapes and colors", "em": 30, "by": 36, "k": 0}, {"t": "Solves simple problems (stands on a stool to reach)", "em": 30, "by": 36, "k": 0}, {"t": "Knows about one color; follows 2-step instructions", "em": 30, "by": 36, "k": 0}, {"t": "Understands cause and effect (“it's quiet because you turned it off”)", "em": 36, "by": 36, "k": 0}, {"t": "Matches a few colors; completes a 3–4 piece puzzle", "em": 36, "by": 36, "k": 0}, {"t": "Sorts by color, shape, or size; multi-step pretend play", "em": 36, "by": 36, "k": 0}, {"t": "Asks “why/how”; understands “mine/yours”", "em": 36, "by": 36, "k": 0}], "comm": [{"t": "Makes cooing or throaty sounds other than crying", "em": 2, "by": 4, "k": 0}, {"t": "Startles or reacts to loud sounds", "em": 2, "by": 4, "k": 1}, {"t": "Turns head toward a voice", "em": 2, "by": 4, "k": 0}, {"t": "Has different cries for different needs", "em": 2, "by": 4, "k": 0}, {"t": "Coos and makes vowel sounds; laughs out loud", "em": 4, "by": 6, "k": 0}, {"t": "Vocalizes pleasure and displeasure", "em": 4, "by": 6, "k": 0}, {"t": "Turns toward your voice and responds with sounds", "em": 4, "by": 6, "k": 0}, {"t": "Pitch and intonation begin to vary", "em": 4, "by": 6, "k": 0}, {"t": "Takes turns making sounds with you", "em": 6, "by": 9, "k": 0}, {"t": "Babbles; blows raspberries; squeals", "em": 6, "by": 9, "k": 0}, {"t": "Produces some consonant sounds (ba, ga)", "em": 6, "by": 9, "k": 0}, {"t": "Briefly stops or looks when name is called (emerging)", "em": 7, "by": 10, "k": 1}, {"t": "Babbles long strings (mamama, bababa)", "em": 9, "by": 12, "k": 0}, {"t": "Uses gestures — reaches up to be picked up", "em": 9, "by": 12, "k": 1}, {"t": "Responds to “come here”; pauses briefly at “no”", "em": 9, "by": 12, "k": 0}, {"t": "Looks at familiar people or objects when named (emerging)", "em": 9, "by": 12, "k": 0}, {"t": "Says first words (“mama/dada” meaningfully, plus one more)", "em": 12, "by": 15, "k": 1}, {"t": "Waves bye-bye and uses gestures", "em": 12, "by": 15, "k": 1}, {"t": "Follows a simple request paired with a gesture", "em": 12, "by": 15, "k": 0}, {"t": "Understands “no”; points to show or ask (emerging)", "em": 12, "by": 15, "k": 0}, {"t": "Tries to say one or two words besides mama/dada", "em": 15, "by": 18, "k": 1}, {"t": "Looks at a familiar object when you name it", "em": 15, "by": 18, "k": 1}, {"t": "Follows a direction given with a gesture", "em": 15, "by": 18, "k": 0}, {"t": "Points to show you something interesting (emerging)", "em": 15, "by": 18, "k": 0}, {"t": "Tries to say three or more words besides mama/dada", "em": 18, "by": 24, "k": 1}, {"t": "Follows a 1-step direction without a gesture", "em": 18, "by": 24, "k": 0}, {"t": "Points to ask for things and to show you", "em": 18, "by": 24, "k": 1}, {"t": "Understands far more words than they can say", "em": 18, "by": 24, "k": 0}, {"t": "Puts two words together (“more milk”)", "em": 24, "by": 30, "k": 1}, {"t": "Uses 200+ words; adds new words weekly", "em": 24, "by": 30, "k": 1}, {"t": "Points to many pictures or objects when named", "em": 24, "by": 30, "k": 0}, {"t": "Speech is about half understandable to others", "em": 24, "by": 30, "k": 0}, {"t": "Says about 250 words and uses 2–3 word phrases", "em": 30, "by": 36, "k": 1}, {"t": "Uses pronouns (I, me, you) — sometimes mixed up", "em": 30, "by": 36, "k": 0}, {"t": "Names objects in a book when asked; asks “what's that?”", "em": 30, "by": 36, "k": 0}, {"t": "Speech is increasingly understandable", "em": 30, "by": 36, "k": 0}, {"t": "Speech is understandable to others most of the time", "em": 36, "by": 36, "k": 1}, {"t": "Uses 3–4+ word sentences; asks who/what/where/why", "em": 36, "by": 36, "k": 0}, {"t": "Says first (maybe last) name; uses plurals and past tense (emerging)", "em": 36, "by": 36, "k": 0}, {"t": "Follows a 2-step direction; tells a simple experience", "em": 36, "by": 36, "k": 0}], "social": [{"t": "Fixes on and holds gaze with your face", "em": 2, "by": 4, "k": 0}, {"t": "Calms when picked up, talked to, or comforted", "em": 2, "by": 4, "k": 0}, {"t": "Smiles back at you (social smile, emerging)", "em": 2, "by": 4, "k": 1}, {"t": "Draws attention or signals when in distress", "em": 2, "by": 4, "k": 0}, {"t": "Smiles spontaneously at people and at self in mirror", "em": 4, "by": 6, "k": 0}, {"t": "Anticipates being lifted or fed; moves toward you", "em": 4, "by": 6, "k": 0}, {"t": "Enjoys playful games like “So Big!”", "em": 4, "by": 6, "k": 0}, {"t": "Vocalizes back and forth in “conversation”", "em": 4, "by": 6, "k": 0}, {"t": "Knows familiar people; may be wary of strangers (emerging)", "em": 6, "by": 9, "k": 0}, {"t": "Likes looking at self in a mirror; laughs", "em": 6, "by": 9, "k": 0}, {"t": "Shows several emotions (pleasure, displeasure)", "em": 6, "by": 9, "k": 1}, {"t": "Plays simple games like peek-a-boo", "em": 6, "by": 9, "k": 0}, {"t": "Is shy, clingy, or wary with strangers; reacts when you leave", "em": 9, "by": 12, "k": 0}, {"t": "Turns or looks when name is called", "em": 9, "by": 12, "k": 0}, {"t": "Plays back-and-forth games; “shows off” for attention", "em": 9, "by": 12, "k": 0}, {"t": "Shows attachment to a favorite toy or blanket", "em": 9, "by": 12, "k": 0}, {"t": "Plays games like pat-a-cake; performs for attention", "em": 12, "by": 15, "k": 0}, {"t": "Imitates familiar words and actions in turn-taking", "em": 12, "by": 15, "k": 0}, {"t": "Shows sensitivity to others' moods", "em": 12, "by": 15, "k": 0}, {"t": "Hands you a toy; pushes or pulls your hand for help", "em": 12, "by": 15, "k": 0}, {"t": "Copies other children; claps when excited", "em": 15, "by": 18, "k": 0}, {"t": "Shows or shares an object they like", "em": 15, "by": 18, "k": 0}, {"t": "Hugs and kisses familiar people", "em": 15, "by": 18, "k": 0}, {"t": "Requests help from an adult", "em": 15, "by": 18, "k": 0}, {"t": "Points to show you something interesting (joint attention)", "em": 18, "by": 24, "k": 1}, {"t": "Moves away to explore but checks back with you", "em": 18, "by": 24, "k": 0}, {"t": "Has tantrums when frustrated; shows a range of emotions", "em": 18, "by": 24, "k": 0}, {"t": "Helps with dressing; gives or shows toys", "em": 18, "by": 24, "k": 0}, {"t": "Notices and may try to comfort others who are upset", "em": 24, "by": 30, "k": 0}, {"t": "Looks to your face for how to react (social referencing)", "em": 24, "by": 30, "k": 0}, {"t": "Plays alongside peers; “checks in” with you while playing", "em": 24, "by": 30, "k": 0}, {"t": "Shows independence (“me do it”); says “mine”", "em": 24, "by": 30, "k": 0}, {"t": "Plays near and sometimes with other children", "em": 30, "by": 36, "k": 0}, {"t": "Shows you what they can do — “look at me!”", "em": 30, "by": 36, "k": 0}, {"t": "Has strong preferences; may resist or dawdle", "em": 30, "by": 36, "k": 0}, {"t": "Begins to try to comfort others", "em": 30, "by": 36, "k": 0}, {"t": "Plays with 2–3 children; takes turns with support", "em": 36, "by": 36, "k": 0}, {"t": "Separates more easily; calms within ~10 min after you leave", "em": 36, "by": 36, "k": 0}, {"t": "Shows empathy; follows simple rules", "em": 36, "by": 36, "k": 0}, {"t": "Cooperative pretend play (“you be the baby”)", "em": 36, "by": 36, "k": 0}]};
+
+const STACKS=[
+ {key:"Rolls both ways",L:[["Rolling","the goal"],["Trunk rotation","the body twisting to turn over"],["Pushing through arms","weight-bearing to press up"],["Turning head side to side","moving it with intention"],["Head control","lifting and holding the head"],["Tolerating tummy time","being okay on the belly"]]},
+ {key:"Points to show you something",L:[["Pointing to share","'look at that!'"],["Pointing","showing you from a distance"],["Leading an adult","taking your hand to what they want"],["Reaching","the first 'I want that'"],["Regulation + connection","calm enough to want to share"]]},
+ {key:"Puts objects into a container",L:[["Toys in & out of a bucket","the goal"],["Coordinated release","aim, then let go into the bucket"],["Reach + grasp","picking the toy up"],["Trunk control","steady while the hands work"],["Independent sitting","a stable base"]]},
+ {key:"Says first words",L:[["Using words","asking with words"],["Understanding what things are","receptive — 'cup' means that"],["Attending to people speaking","tuning in to voices"],["Gestures","reach \u2192 point (pre-verbal asking)"],["Regulation + connection","calm and tuned in"]]},
+ {key:"side-to-side (rotary)",L:[["Chewing & managing food","the goal"],["Tongue elevation & lateralization","moving food side to side"],["Crossing midline","organizing across the body"],["Weight through shoulders","shoulder stability"],["Head control","holding the head steady"],["Trunk control","a stable base to eat from"]]},
+ {key:"Walks well without holding on",L:[["Walking","the goal"],["Cruising","weight-shifting along furniture"],["Pull to stand + stabilize","getting up and holding on"],["Leg dissociation / half-kneel","legs working independently"],["Upper-body strength","arms strong enough to pull up"]]},
+ {key:"Imitates gestures and actions",L:[["Imitation","watching and copying you"],["Serve-and-return","the back-and-forth loop"],["Attending to a person","tuning in to someone else"],["Regulation","calm enough to notice"]]},
+];
+function stackFor(txt){return STACKS.find(s=>txt.indexOf(s.key)>=0);}
+function lightenC(hex,f){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16),t=(1-f)*0.5;return `rgb(${Math.round(r+(255-r)*t)},${Math.round(g+(255-g)*t)},${Math.round(b+(255-b)*t)})`;}
+function stackHTML(st,color){const L=st.L,n=L.length;let s='<div class="bblab">Built on — bottom to top</div>';L.forEach((ly,i)=>{const col=i===n-1?"#2E5168":lightenC(color,i/(n-1));s+=`<div class="bblayer" style="background:${col}"><span class="bblt">${ly[0]}</span><span class="bbls">${ly[1]}</span></div>`;if(i<n-1)s+='<div class="bbarrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 15 12 9 18 15"/></svg></div>';});s+='<div class="bbfoot">Work the lowest shaky layer first — that\'s where the skill is really built.</div>';return s;}
+
+const ACTS={
+ 2:{gross:[{t:"Daily tummy time",h:"Short, frequent sessions on your chest or a firm surface. Dangle a toy so they lift to look.",v:"DEMO"},{t:"Bicycle legs",h:"On their back, gently cycle the legs at diaper changes to wake up the core."}],fine:[{t:"Open the fist",h:"Stroke the back of the hand so fingers open, then press a light rattle in."},{t:"Hands to middle",h:"Bring their hands together over the chest so they discover them."}],feed:[{t:"Responsive feeds",h:"Watch for hunger and fullness cues and keep feeds calm and unhurried — feeding is connection first."},{t:"Hands to mouth",h:"Let them mouth clean hands or a teether; it maps the mouth and builds the hand-to-mouth path for self-feeding later."}],cog:[{t:"Slow face tracking",h:"Hold your face 8–12 inches away and move side to side so their eyes follow."},{t:"High-contrast cards",h:"Show bold black-and-white patterns during alert time."}],comm:[{t:"Coo back",h:"Copy their sound and wait — this first turn is the seed of conversation."},{t:"Narrate everything",h:"Talk through what you're doing in a warm, sing-song voice."}],social:[{t:"Smile and pause",h:"Smile, talk, then pause and watch — give room to smile back."},{t:"Skin-to-skin calm",h:"Hold close when fussy; being soothed teaches the body to settle."}]},
+ 4:{gross:[{t:"Prop on elbows",h:"A rolled towel under the chest makes pushing up easier in tummy time."},{t:"Supported sit",h:"Hold them upright on your lap to practice steadying the head."}],fine:[{t:"Easy-grip rattle",h:"Place a light rattle in their hand so they feel the cause and effect."},{t:"Reach to swat",h:"Hang toys within reach over a play gym to invite batting."}],feed:[{t:"Mouthing play",h:"Offer safe teethers of different textures to explore and gently desensitize the gag."},{t:"Mealtime audience",h:"Bring baby to the table so they watch the family eat — interest comes before eating."}],cog:[{t:"Watch the hands",h:"Put a soft band on one wrist so they study and reach for their hands."},{t:"Cause and effect",h:"A crinkle book that reacts teaches their actions make things happen."}],comm:[{t:"Find my voice",h:"Talk from one side, then the other, so they turn to find you."},{t:"Echo their coos",h:"Mirror their vowel sounds and add one of your own."}],social:[{t:"Peekaboo",h:"Gentle peekaboo builds back-and-forth and a first dose of anticipation."},{t:"Tickle and wait",h:"Pause before the tickle so they learn to expect and ask for more."}]},
+ 6:{gross:[{t:"Roll to a target",h:"A favorite toy just out of reach to one side motivates rolling."},{t:"Sit and prop",h:"Sit them with hands forward on the floor, staying close to catch a tip."}],fine:[{t:"Two-hand pass",h:"Offer a toy at the middle and let them work it hand to hand."},{t:"Reach across",h:"Place toys slightly to one side so they cross the body to grab."}],feed:[{t:"Spoon intro",h:"Thin purees on a soft spoon; let them open for it and set the pace. Always seated and supervised.",v:"DEMO"},{t:"Let them touch food",h:"Messy hands in puree builds acceptance — exploring is part of learning to eat."}],cog:[{t:"Mouthing basket",h:"A bin of safe textures to mouth is real cognitive work right now."},{t:"Drop and react",h:"Let them drop a toy and react with delight — objects still exist!"}],comm:[{t:"Sound ping-pong",h:"Trade raspberries and squeals; leave a clear pause for their turn."},{t:"Name and show",h:"Hold up an object, name it, and let them grab it."}],social:[{t:"Mirror play",h:"Sit at a mirror together, point, and talk about the baby you see."},{t:"Big laughs",h:"Find the move that makes them laugh and repeat it — joy is connection."}]},
+ 9:{gross:[{t:"Sit-and-play ring",h:"Surround a seated baby with toys in a wide ring so reaching builds balance."},{t:"Crawl chase",h:"Crawl beside them toward a toy to encourage hands and knees."}],fine:[{t:"Puff pick-up",h:"A few soft puffs on the tray build raking and early pinching."},{t:"Bang the cups",h:"Two cups to bang together — and copy each other."}],feed:[{t:"Soft finger foods",h:"Meltable or very soft pea-sized pieces to practice munching. Stay within reach and know your choking-hazard guidance."},{t:"Gnaw to chew",h:"A safe teether or soft food to gnaw builds the up-and-down munch and tongue movement."}],cog:[{t:"Find it under a cloth",h:"Hide a toy under a cloth while they watch, then cheer the find."},{t:"In and out",h:"A bowl and blocks — dropping in and dumping out is prime learning."}],comm:[{t:"Babble back",h:"Echo their mamama, then add a real word — more, ball."},{t:"Up game",h:"Say up every time you lift them so the word links to the action."}],social:[{t:"Name in a song",h:"Sing their name often so they turn and respond to it."},{t:"Goodbye games",h:"Brief, playful peekaboo eases the new feeling of you leaving and returning."}]},
+ 12:{gross:[{t:"Cruise the couch",h:"Line toys along the sofa edge so they side-step between them."},{t:"Pull-to-stand spots",h:"Sturdy surfaces at the right height invite standing up."}],fine:[{t:"Pincer snacks",h:"Tiny soft foods build the thumb-and-finger pinch."},{t:"Poke and point",h:"Pop-up and button toys reward the one-finger poke."}],feed:[{t:"Open-cup sips",h:"A few sips of water from a small open or straw cup at meals."},{t:"Loaded spoon",h:"Pre-load a spoon and hand it over so they bring it to the mouth — let it be messy."}],cog:[{t:"Posting box",h:"Drop blocks through a slot or into a cup — fill, dump, repeat."},{t:"Where'd it go?",h:"Hide a toy under one of two cloths and let them search."}],comm:[{t:"Wave with words",h:"Pair bye-bye and hi with a wave every single time."},{t:"First-word routines",h:"Same word at the same moment daily — milk at the cup, dog at the pet."}],social:[{t:"Pat-a-cake",h:"Repeat playful hand games — the predictable turns are social gold."},{t:"Hand it back",h:"Take a toy they offer, say thanks, give it back — build give-and-take."}]},
+ 15:{gross:[{t:"Push-toy walks",h:"A weighted push wagon gives confidence for first independent steps."},{t:"Step the gap",h:"Two stable supports a small step apart coax a free step between them."}],fine:[{t:"Spoon practice",h:"Let them try a loaded spoon with thick food — mess is the point."},{t:"Two-block tower",h:"Stack two, then let them knock it down."}],feed:[{t:"Scoop practice",h:"Thick foods like yogurt or oatmeal stay on the spoon and make scooping easier."},{t:"Family foods",h:"Offer soft versions of what you're eating so meals are shared, not separate."}],cog:[{t:"Real-object pretend",h:"Hand them a brush, cup, phone and watch them try the right use."},{t:"Slow hiding",h:"Hide a toy in a bag and let them dig it out."}],comm:[{t:"Name and wait",h:"Hold up an object, name it, pause, and give them a chance to try the word."},{t:"Gesture directions",h:"Give come here or give me with the matching gesture."}],social:[{t:"Side-by-side play",h:"Play near other little ones; copying peers grows this strand now."},{t:"Show-and-share",h:"When they bring you something, light up — sharing attention is the milestone."}]},
+ 18:{gross:[{t:"Climbing course",h:"Cushions and low steps to climb on and off, with you spotting."},{t:"Ball kick",h:"Roll a ball to their feet and cheer the first kicks and chases."}],fine:[{t:"Crayon scribbles",h:"Tape paper down and let them make big marks with a chunky crayon."},{t:"Finger-feeding",h:"A variety of self-feed foods refines the grip and the aim."}],feed:[{t:"Texture ladder",h:"Slowly fold small soft lumps into smooth foods so chewing keeps maturing."},{t:"Two utensils",h:"Spoon plus a toddler fork; stab-able pieces invite the fork."}],cog:[{t:"Copy my chore",h:"Hand them a cloth to wipe or a small broom to push alongside you."},{t:"Simple pretend",h:"Push cars, feed a teddy — narrate it so play and language grow together."}],comm:[{t:"One-step jobs",h:"Give a direction with no gesture — get your shoe — and wait."},{t:"Flood with words",h:"Name things all day; model far more words than you expect back."}],social:[{t:"Point together",h:"Follow their point and name it; point things out and watch them look."},{t:"Dressing helper",h:"Let them push an arm through a sleeve — small part, big connection."}]},
+ 24:{gross:[{t:"Stair practice",h:"Hold a hand for up-and-down steps, one foot at a time."},{t:"Kick and run",h:"A soft ball to chase and kick across the room."}],fine:[{t:"Four-block tower",h:"Stack together and count each block as it goes on."},{t:"Spoon meals",h:"Make the spoon the main event at one calm meal a day."}],feed:[{t:"Chew on the sides",h:"Place food on the molars or side gums to build the rotary, side-to-side chew."},{t:"No-pressure new food",h:"Put one new food beside favorites — exposure, never force — to keep mealtimes calm."}],cog:[{t:"Two-toy play",h:"Combine toys — animals into a truck — to grow play into little scenes."},{t:"Buttons and lids",h:"Pop-up toys, switches, and twist lids reward problem-solving."}],comm:[{t:"Two-word stretch",h:"When they say one word, echo it as two — milk becomes more milk."},{t:"Book pointing",h:"Ask where's the dog? in familiar books and celebrate the point."}],social:[{t:"Name the feeling",h:"Put words on feelings — you're sad — so they learn to read emotions."},{t:"Watch-me moments",h:"Respond when they look to you to react; your face teaches them."}]},
+ 30:{gross:[{t:"Two-foot jumps",h:"Jump off a low step or over a line on the floor together."},{t:"Overhand throw",h:"Toss soft balls at a big target like a laundry basket."}],fine:[{t:"Twist and open",h:"Loose-lid jars and big nuts-and-bolts toys for hands to twist."},{t:"Undressing wins",h:"Let them pull off socks and an open jacket."}],feed:[{t:"Fork meals",h:"Offer foods that are easy to stab so the fork becomes routine."},{t:"Cook together",h:"Washing, stirring, and serving builds willingness to try what they helped make."}],cog:[{t:"Pretend scenes",h:"Set up a tea party or feed-the-doll routine and follow their story."},{t:"Two-step directions",h:"Get your cup and put it on the table — pair them, then fade your help."}],comm:[{t:"Action words",h:"Narrate verbs — jumping, eating, running — to push past single nouns."},{t:"Name the page",h:"Point and ask what's that? through a picture book and expand answers."}],social:[{t:"Play dates",h:"Short, low-key time with one other child to practice playing together."},{t:"Applaud the try",h:"When they say look at me, stop and watch — pride fuels this strand."}]},
+ 36:{gross:[{t:"Bead stringing",h:"Thread large beads on a stiff lace for hand strength and focus."},{t:"Fork & dressing",h:"Practice the fork and pulling on simple clothes in the daily routine."}],fine:[{t:"Draw a circle",h:"Show the round shape, then let them copy; doodle together often."},{t:"Lacing cards",h:"Big lacing cards build the control behind early writing."}],feed:[{t:"Family table",h:"Eat together and talk about the food — modeling does the teaching."},{t:"Try-it ritual",h:"A relaxed one-bite-of-something-new habit, with zero pressure, widens their range."}],cog:[{t:"Copy shapes",h:"Draw a circle and a line for them to imitate; name what you draw."},{t:"Why questions",h:"Answer their why and ask simple ones back to stretch thinking."}],comm:[{t:"Real conversations",h:"Ask open questions and give them time; aim for back-and-forth turns."},{t:"Name and tell",h:"Practice their first name and short tell-me-what-happened stories."}],social:[{t:"Group games",h:"Turn-taking games with other children — rolling a ball in a circle."},{t:"Goodbye routine",h:"A short, consistent goodbye helps them settle within a few minutes."}]},
+};
+
+/* ---------------- STATE + STORAGE ---------------- */
+const K={child:"fl:child:v1",prog:"fl:prog:v2",hist:"fl:hist:v1"};
+let state={child:null,progress:{},history:[]};
+let mem={};
+const hasWS=(typeof window!=="undefined"&&window.storage&&typeof window.storage.get==="function");
+function lsOk(){try{const t="__t";localStorage.setItem(t,"1");localStorage.removeItem(t);return true;}catch(e){return false;}}
+const hasLS=lsOk();
+async function sget(k){try{if(hasWS){const r=await window.storage.get(k,false);return r?JSON.parse(r.value):null;}}catch(e){}
+  try{if(hasLS){const v=localStorage.getItem(k);return v?JSON.parse(v):null;}}catch(e){} return k in mem?mem[k]:null;}
+async function sset(k,v){try{if(hasWS){await window.storage.set(k,JSON.stringify(v),false);return;}}catch(e){}
+  try{if(hasLS){localStorage.setItem(k,JSON.stringify(v));return;}}catch(e){} mem[k]=v;}
+async function loadState(){state.child=await sget(K.child);state.progress=(await sget(K.prog))||{};state.history=(await sget(K.hist))||[];}
+
+/* ---------------- HELPERS ---------------- */
+function ageMonths(dob){const d=new Date(dob+"T00:00:00"),n=new Date();let m=(n.getFullYear()-d.getFullYear())*12+(n.getMonth()-d.getMonth());if(n.getDate()<d.getDate())m--;return Math.max(0,m);}
+function curBand(m){let b=BANDS[0];for(const x of BANDS)if(m>=x)b=x;return b;}
+function dById(id){return DOMAINS.find(d=>d.id===id);}
+function msOf(id){return MS[id]||[];}
+function arrOf(id){state.progress[id]=state.progress[id]||[];const n=msOf(id).length;let a=state.progress[id];if(!Array.isArray(a)||a.length!==n){a=new Array(n).fill(false);state.progress[id]=a;}return a;}
+function expected(id,m){return msOf(id).map((x,i)=>({x,i})).filter(o=>o.x.em<=m);}
+function fill(id,m){const a=arrOf(id),exp=expected(id,m);if(!exp.length)return 1;return exp.filter(o=>a[o.i]).length/exp.length;}
+function bucketOf(x,m){if(m>=x.em&&m<=x.by)return"now";if(x.em>m)return x.em<=m+4?"soon":"future";return"past";}
+function tier(id,m){const a=arrOf(id),ms=msOf(id),exp=expected(id,m);if(!exp.length)return"strong";if(ms.some((x,i)=>x.k&&x.by<m&&!a[i]))return"flag";if(exp.every(o=>a[o.i]))return"strong";return"none";}
+const I={
+ play:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg>',
+ check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+ chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
+ spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.2"/></svg>',
+ root:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v8m0 0c0 3-3 4-3 7m3-7c0 3 3 4 3 7M12 11 8 8m4 3 4-3"/></svg>',
+ web:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M12 10V4m1.7 7 5-3m-5 5 5 3M10.3 13l-5 3m5-5-5-3"/></svg>',
+ good:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>',
+ hand:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a8 8 0 0 0 8-8v-3a1.5 1.5 0 0 0-3 0V8a1.5 1.5 0 0 0-3 0V4a1.5 1.5 0 0 0-3 0v6m0 0V6.5a1.5 1.5 0 0 0-3 0V14l-1.6-1.8a1.6 1.6 0 0 0-2.4 2L8 20"/></svg>',
+};
+function esc(s){return (s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+/* ---------------- RENDER ---------------- */
+const app=document.getElementById("app"),who=document.getElementById("who");
+function render(){
+  if(!state.child){renderSetup();who.innerHTML="";return;}
+  const m=ageMonths(state.child.dob),b=curBand(m);
+  who.innerHTML=`<span class="pill">${esc(state.child.name)} <span class="age">${m}m</span></span><button class="linkbtn" id="ed">Edit</button>`;
+  document.getElementById("ed").onclick=()=>{state.child=null;render();};
+  renderDash(m,b);
+}
+function renderSetup(){
+  app.innerHTML=`<section class="hero">
+    <div class="eyebrow">Unlimited Pediatric Therapy</div>
+    <h1>Your little one's growing <em>web</em>.</h1>
+    <p class="lede">Check in once a month, see which strands are strong, and when one runs thin, get the play that helps — built by pediatric therapists, organized the way development really unfolds.</p>
+  </section>
+  <div class="card setup">
+    <h2>Start the web</h2>
+    <p class="s">Two details. Everything saves on your phone so you can come back each month.</p>
+    <div class="field"><label for="cn">Child's first name</label><input id="cn" type="text" placeholder="e.g. Eli" autocomplete="off"/></div>
+    <div class="field"><label for="cd">Date of birth</label><input id="cd" type="date"/><div class="hint">Used only to show the right milestones for their age. For babies born early, you can use the adjusted due date.</div></div>
+    <button class="btn block" id="go">Build the web</button>
+  </div>`;
+  document.getElementById("go").onclick=async()=>{
+    const n=document.getElementById("cn").value.trim(),d=document.getElementById("cd").value;
+    if(!n){flash("cn");return;}if(!d){flash("cd");return;}
+    state.child={name:n,dob:d};await sset(K.child,state.child);render();
+  };
+}
+function flash(id){const e=document.getElementById(id);e.style.borderColor="#E07A5F";e.focus();}
+
+function renderDash(m,b){
+  app.innerHTML=`<section class="hero" style="padding-bottom:0">
+    <div class="eyebrow">This month · ${esc(state.child.name)} is ${m} months</div>
+    <h1 style="font-size:clamp(26px,7vw,34px)">The web right now</h1></section>
+   <section class="card stage">
+     <div id="web"></div>
+     <div class="tip">Tap a strand to open it. A dashed strand isn't a verdict — it's just where a little play can help.</div>
+     <div class="month-cta"><button class="btn gold" id="save">Save this month</button><span class="saved-note" id="sn">Saved ✓</span></div>
+   </section>
+   <div class="sec"><h2>The six foundations</h2><div class="s">Why each matters, how they link, and what to look for now.</div><span class="chip">Age: ${m} months</span></div>
+   <div class="founds" id="founds"></div>
+   <div class="sec"><h2>Month by month</h2><div class="s">Watch the web fill in over time.</div></div>
+   <div class="card hist" id="hist"></div>`;
+  drawWeb(m);drawFounds(m);drawHist();
+  document.getElementById("save").onclick=()=>saveMonth(m);
+}
+
+function ringSVG(pct,color){
+  const r=15,c=2*Math.PI*r,off=c*(1-pct/100);
+  return `<svg width="38" height="38" viewBox="0 0 38 38"><circle cx="19" cy="19" r="15" fill="none" stroke="#E4EBEF" stroke-width="4"/><circle cx="19" cy="19" r="15" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 19 19)"/></svg>`;
+}
+
+function drawWeb(m){
+  const W=420,H=388,cx=W/2,cy=H/2,R=132;
+  const pos={},step=360/DOMAINS.length;DOMAINS.forEach((d,i)=>{const a=(-90+i*step)*Math.PI/180;pos[d.id]={x:cx+R*Math.cos(a),y:cy+R*Math.sin(a)};});
+  let th="";LINKS.forEach(([a,c])=>{const hh=(fill(a,m)+fill(c,m))/2;let w,o,dash;if(hh>=0.6){w=3.4;o=0.8;dash="";}else if(hh>=0.3){w=2.3;o=0.58;dash="";}else{w=1.8;o=0.5;dash='stroke-dasharray="2 7"';}th+=`<line x1="${pos[a].x}" y1="${pos[a].y}" x2="${pos[c].x}" y2="${pos[c].y}" stroke="#4E6576" stroke-width="${w}" stroke-linecap="round" opacity="${o}" ${dash}/>`;});
+  let sp="";DOMAINS.forEach(d=>{const f=fill(d.id,m),dash=f<0.25?'stroke-dasharray="2 7"':'';sp+=`<line x1="${cx}" y1="${cy}" x2="${pos[d.id].x}" y2="${pos[d.id].y}" stroke="${d.color}" stroke-width="${(1.8+f*2.8).toFixed(2)}" opacity="${(0.38+f*0.5).toFixed(2)}" stroke-linecap="round" ${dash}/>`;});
+  let nd="";DOMAINS.forEach(d=>{const f=fill(d.id,m),t=tier(d.id,m),p=pos[d.id],rad=17+f*11,pct=Math.round(f*100);
+    const ring=t!=="strong"?`<circle cx="${p.x}" cy="${p.y}" r="${rad+5}" fill="none" stroke="${t==="flag"?"#E0894F":d.color}" stroke-width="${t==="flag"?2.6:1.8}" stroke-dasharray="3 5" opacity="0.95"/>`:"";
+    nd+=`<g class="web-node" data-id="${d.id}" role="button" tabindex="0" aria-label="${d.name}, ${pct} percent">${ring}<circle cx="${p.x}" cy="${p.y}" r="${rad}" fill="${d.color}" opacity="${(0.6+f*0.38).toFixed(2)}"/><circle cx="${p.x}" cy="${p.y}" r="${rad}" fill="none" stroke="${d.color}" stroke-width="2.5"/><text x="${p.x}" y="${p.y+3.6}" text-anchor="middle" class="web-pct" fill="#fff">${pct}%</text><text x="${p.x}" y="${p.y+rad+15}" text-anchor="middle" class="web-cap" fill="#27414F">${d.sub.split(" ")[0]}</text></g>`;});
+  const ini=esc((state.child.name||"?").slice(0,1).toUpperCase());
+  const ctr=`<circle cx="${cx}" cy="${cy}" r="30" fill="#2E5168"/><text x="${cx}" y="${cy-1}" text-anchor="middle" font-family="Baloo 2,sans-serif" font-size="21" fill="#fff" font-weight="700">${ini}</text><text x="${cx}" y="${cy+13}" text-anchor="middle" font-size="9" fill="#AFC2CE" font-weight="600">${m} mo</text>`;
+  document.getElementById("web").innerHTML=`<svg class="web" viewBox="0 0 ${W} ${H}" role="img" aria-label="Developmental web">${th}${sp}${ctr}${nd}</svg><div class="web-legend"><span><i class="ll"></i>solid = strong</span><span><i class="ll dot"></i>dotted = still growing</span></div>`;
+  document.querySelectorAll(".web-node").forEach(n=>{const id=n.getAttribute("data-id"),go=()=>openF(id);n.addEventListener("click",go);n.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});});
+}
+function tagFor(id){const d=dById(id);return `<span class="tag" style="color:${d.color};border-color:${d.color}55">${d.name}</span>`;}
+
+function drawFounds(m){
+  const bnd=curBand(m);
+  document.getElementById("founds").innerHTML=DOMAINS.map(d=>{
+    const ms=msOf(d.id),a=arrOf(d.id),pct=Math.round(fill(d.id,m)*100),t=tier(d.id,m);
+    const dotc=t==="strong"?"#2E9B8E":t==="flag"?"#E0894F":"#C9CFD3";
+    const row=(i)=>{const x=ms[i],isk=x.k,rf=(isk&&x.by<m&&!a[i])?`<div class="ms-flag">${I.hand}<span>If this isn't met or feels far off, mention it to your pediatrician or ask about a developmental assessment.</span></div>`:'';const st=stackFor(x.t);const pill=st?`<button class="bbtog" data-bb="${d.id}-${i}" aria-expanded="false">Built on <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>`:'';const wrap=st?`<div class="bbwrap" id="bb-${d.id}-${i}"><div class="bbstack">${stackHTML(st,d.color)}</div></div>`:'';return `<div class="check ${a[i]?'on':''}" data-id="${d.id}" data-i="${i}" role="checkbox" aria-checked="${a[i]}" tabindex="0"><span class="cbox">${I.check}</span><span class="ctext">${x.t}${isk?'<span class="keytag">key skill</span>':''}${pill}</span></div>${rf}${wrap}`;};
+    const now=[],past=[],soon=[];ms.forEach((x,i)=>{const bk=bucketOf(x,m);if(bk==="now")now.push(i);else if(bk==="past")past.push(i);else if(bk==="soon")soon.push(i);});
+    let body="";
+    if(now.length)body+=`<div class="mh">Emerging now</div>${now.map(row).join("")}`;
+    if(past.length)body+=`<div class="mh">Earlier — keep building</div>${past.map(row).join("")}`;
+    if(soon.length)body+=`<div class="mh soon">Coming up soon</div><div class="soongrp">${soon.map(row).join("")}</div>`;
+    if(!body)body='<div class="hempty">Nothing emerging at this age yet — check back soon.</div>';
+    return `<section class="fcard" id="fc-${d.id}" style="--c:${d.color}">
+      <button class="fhead" aria-expanded="false">
+        <span class="ficon">${d.icon}</span>
+        <span class="ftitle"><span class="nm">${d.name}</span><span class="sb">${d.sub}</span></span>
+        <span class="fmeter"><span class="flag-dot" style="background:${dotc}"></span><span class="ring">${ringSVG(pct,d.color)}<span class="num">${pct}%</span></span></span>
+        <span class="chev">${I.chev}</span>
+      </button>
+      <div class="fbody">
+        <div class="ftabs" role="tablist">
+          <button class="ftab on" data-t="why" role="tab" aria-selected="true">Why it matters</button>
+          <button class="ftab" data-t="miles" role="tab" aria-selected="false">Milestones</button>
+          <button class="ftab" data-t="acts" role="tab" aria-selected="false">Activities</button>
+        </div>
+        <div class="fpane on" data-p="why">
+          <p class="why-lead">${d.root}</p>
+          ${d.web?`<p class="why-sub">${d.web}</p>`:''}
+          <div class="opensup">${d.depends.length?`<span class="ol">Builds on</span>${d.depends.map(tagFor).join("")}`:''}${d.supports.length?`<span class="ol">Opens up</span>${d.supports.map(tagFor).join("")}`:''}</div>
+        </div>
+        <div class="fpane" data-p="miles">
+          <div class="checks">${body}</div>
+          <div class="flagslot">${flagHTML(t)}</div>
+        </div>
+        <div class="fpane" data-p="acts">${actsHTML(d,bnd)}</div>
+      </div></section>`;
+  }).join("");
+  document.querySelectorAll(".fhead").forEach(btn=>btn.addEventListener("click",()=>{const c=btn.closest(".fcard"),o=c.classList.toggle("open");btn.setAttribute("aria-expanded",o);}));
+  document.querySelectorAll(".ftab").forEach(tab=>tab.addEventListener("click",()=>{const body=tab.closest(".fbody"),k=tab.getAttribute("data-t");body.querySelectorAll(".ftab").forEach(x=>{const on=x===tab;x.classList.toggle("on",on);x.setAttribute("aria-selected",on);});body.querySelectorAll(".fpane").forEach(p=>p.classList.toggle("on",p.getAttribute("data-p")===k));}));
+  document.querySelectorAll(".bbtog").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();const w=document.getElementById("bb-"+b.getAttribute("data-bb"));const open=w.classList.toggle("open");b.classList.toggle("open",open);b.setAttribute("aria-expanded",open);}));
+  document.querySelectorAll(".check").forEach(c=>{const tog=async()=>{const id=c.getAttribute("data-id"),i=+c.getAttribute("data-i"),a=arrOf(id);a[i]=!a[i];await sset(K.prog,state.progress);refresh(m,id);};c.addEventListener("click",tog);c.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();tog();}});});
+}
+function flagHTML(t){
+  if(t==="strong")return `<div class="flag strong">${I.good}<div>This strand looks strong right now — keep playing, and check back next month.</div></div>`;
+  return "";
+}
+function actsHTML(d,b){const acts=(ACTS[b]&&ACTS[b][d.id])||[];return `<div class="acts"><div class="acts-head">${I.spark} Play that strengthens this strand <span class="ct">${bandLabel(b)}</span></div>${acts.map((a,i)=>`<div class="act"><span class="n">${i+1}</span><div><div class="at">${a.t}</div><div class="ah">${a.h}</div>${a.v?`<button class="vidbtn" data-v="${encodeURIComponent(a.v)}">${I.play} Watch demo</button><div class="vidbox"></div>`:''}</div></div>`).join("")}</div>`;}
+function playerHTML(v){
+  if(v==="DEMO")return `<div class="vidph"><div>${I.play}</div><b>Your demo clip plays here</b><span>Replace "DEMO" with a video link (MP4, YouTube, or Vimeo) in the app's activity data.</span></div>`;
+  if(/\.(mp4|webm|ogg|mov)$/i.test(v))return `<video controls playsinline preload="metadata" src="${v}"></video>`;
+  let src=v;const yt=v.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);if(yt)src="https://www.youtube.com/embed/"+yt[1];
+  const vm=v.match(/vimeo\.com\/(?:video\/)?(\d+)/);if(vm)src="https://player.vimeo.com/video/"+vm[1];
+  return `<iframe src="${src}" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+}
+document.addEventListener("click",e=>{
+  const btn=e.target.closest(".vidbtn");if(!btn)return;
+  const box=btn.nextElementSibling;if(!box||!box.classList.contains("vidbox"))return;
+  if(box.classList.contains("open")){box.classList.remove("open");box.innerHTML="";btn.innerHTML=`${I.play} Watch demo`;return;}
+  box.innerHTML=playerHTML(decodeURIComponent(btn.getAttribute("data-v")));box.classList.add("open");btn.innerHTML="Hide demo";
+});
+
+function refresh(m,id){
+  const c=document.getElementById("fc-"+id),d=dById(id),a=arrOf(id);
+  const pct=Math.round(fill(id,m)*100),t=tier(id,m);
+  c.querySelector(".ring").innerHTML=ringSVG(pct,d.color)+`<span class="num">${pct}%</span>`;
+  c.querySelector(".flag-dot").style.background=t==="strong"?"#2E9B8E":t==="flag"?"#E0894F":"#C9CFD3";
+  c.querySelectorAll(".check").forEach(ch=>{const i=+ch.getAttribute("data-i");ch.classList.toggle("on",a[i]);ch.setAttribute("aria-checked",a[i]);});
+  c.querySelector(".flagslot").innerHTML=flagHTML(t);
+  drawWeb(m);
+}
+function drawHist(){
+  const el=document.getElementById("hist");
+  if(!state.history.length){el.innerHTML=`<h3>No check-ins yet</h3><div class="s">Tap <b>Save this month</b> above to capture today's web. Come back next month and watch it change.</div>`;return;}
+  const rows=state.history.slice().reverse().map(h=>{const bars=DOMAINS.map(d=>`<div class="hb"><i style="height:${Math.round((h.fills[d.id]??0)*100)}%;background:${d.color}"></i></div>`).join("");return `<div class="hrow"><span class="hd">${h.label}</span><div class="hbars">${bars}</div></div>`;}).join("");
+  el.innerHTML=`<h3>Your check-ins</h3><div class="s">Each row is a month. Bars are the six foundations, in order.</div>${rows}`;
+}
+async function saveMonth(m){
+  const fills={};DOMAINS.forEach(d=>fills[d.id]=fill(d.id,m));
+  const label=new Date().toLocaleDateString(undefined,{month:"short",day:"numeric"});
+  state.history=state.history.filter(h=>h.label!==label);
+  state.history.push({label,months:m,fills,ts:Date.now()});
+  await sset(K.hist,state.history);drawHist();
+  const n=document.getElementById("sn");n.classList.add("show");setTimeout(()=>n.classList.remove("show"),2000);
+}
+function openF(id){const c=document.getElementById("fc-"+id);if(!c)return;if(!c.classList.contains("open")){c.classList.add("open");c.querySelector(".fhead").setAttribute("aria-expanded","true");}c.scrollIntoView({behavior:"smooth",block:"center"});}
+
+/* ---------------- PWA: install + service worker ---------------- */
+let deferredPrompt=null;
+const installEl=document.getElementById("install"),installBtn=document.getElementById("installBtn"),installText=document.getElementById("installText");
+const standalone=window.matchMedia("(display-mode: standalone)").matches||window.navigator.standalone;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;if(!standalone)installEl.classList.add("show");});
+installBtn&&installBtn.addEventListener("click",async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;}installEl.classList.remove("show");});
+// iOS Safari has no install prompt — show a hint instead
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+if(isIOS&&!standalone){installEl.classList.add("show","ios");installText.innerHTML='<b>Add to your home screen:</b> tap the Share button, then “Add to Home Screen.”';}
+if("serviceWorker" in navigator&&location.protocol==="https:"){navigator.serviceWorker.register("sw.js").catch(()=>{});}
+
+(async function(){await loadState();render();})();
+</script>
+</body>
+</html>
